@@ -10,5 +10,7 @@ public class main {
             System.out.println("Input " + (i + 1) + ": " + MinTerms[i]);
         }
         System.out.println("Expression: " + m.SettingExpression());
+        System.out.println("List Of Number's: " + m.numberOfOnes());
+        System.out.println("\nThe Different Bits Are\n: " + m.LevelOne());
     }
 }
