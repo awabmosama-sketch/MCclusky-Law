@@ -5,10 +5,11 @@ public class Mcclusky{
 
     Scanner sc = new Scanner(System.in);
 
+    Set<String> primeImplicant = new LinkedHashSet<>();
+
     ArrayList<String> LevelOneList = new ArrayList<>();
-
     ArrayList<String> LevelTwoList = new ArrayList<>();
-
+    ArrayList<String> LevelThreeList = new ArrayList<>();
     ArrayList<String> minTermsList = new ArrayList<>();
 
     String ST = "";
@@ -24,11 +25,6 @@ public class Mcclusky{
     ArrayList<String> zerosList3 = new ArrayList<>();
     ArrayList<String> zerosList4 = new ArrayList<>();
 
-    boolean[] p1 = {true,true,true,false};
-    boolean[] p2 = {true,true,false,true};
-    boolean[] p3 = {true,false,true,true};
-    boolean[] p4 = {false,true,true,true};
-    
     //--Task 1: Standard Method Selection
 
     String StandardMethod() {
@@ -61,11 +57,11 @@ public class Mcclusky{
         int inputSignals;
         int[] inputArray = new int[varCount];
         while (varCount > 0) {
-            System.out.println("Enter The Input Signal " + i + " :");
+            System.out.println("Enter The Input Signal " + i + ", (1 or 0):");
             inputSignals = sc.nextInt();
             if (inputSignals == 1 || inputSignals == 0) {
                 varCount--;
-                inputArray[i - 1] = inputSignals;
+                inputArray[i-1] = inputSignals;
                 i++;
             } else {
                 System.out.println("Invalid Input, Please Enter 1 or 0");
@@ -92,8 +88,8 @@ public class Mcclusky{
     } else {
         minTerms[i] = " ";
         continue;
+        }
     }
-}
         return minTerms;
     }
 
@@ -139,8 +135,11 @@ public class Mcclusky{
     }    for (String minTerm : minTermsList) {
         expression += FixTable.get(minTerm) + (ST.equals("SOP") ? " + " : " * ");
     }
-    return expression.substring(0, expression.length() - 3) + ("\n\n");
-    }
+        if(expression.length() >= 3){
+            return expression.substring(0,expression.length() - 3);
+        }
+        return expression;
+        }
 
      //--Task 5: Number of Ones Counting
 
@@ -201,6 +200,9 @@ public class Mcclusky{
          else {
             continue;
         }
+        if(NoOfOnes.length() > 3){
+            NoOfOnes = NoOfOnes.substring(0, NoOfOnes.length() - 3) + "\n\n";
+        }
     }
 
     return NoOfOnes.substring(0, NoOfOnes.length() - 3)+("\n\n") + (ST.equals("SOP") ? "\nNo. Of Ones is 1: " + onesList1 +"\n" + "\nNo. Of Ones is 2: " + onesList2 +"\n" + "\nNo. Of Ones is 3: " + onesList3 +"\n" + "\nNo. Of Ones is 4: " + onesList4 : "\nNo. Of Zeros is 1: " + zerosList1 +"\n" + "\nNo. Of Zeros is 2: " + zerosList2 +"\n" + "\nNo. Of Zeros is 3: " + zerosList3 +"\n" + "\nNo. Of Zeros is 4: " + zerosList4 + ("\n"));
@@ -210,44 +212,45 @@ public class Mcclusky{
 
     String LevelOne(){
         StringBuilder CombinedMinTerm = new StringBuilder("");
-
         Map<String, String> FixTableInteger = new HashMap<>();
+        FixTableInteger.put("m0","0000");
+        FixTableInteger.put("m1","0001");
+        FixTableInteger.put("m2","0010");
+        FixTableInteger.put("m3","0011");
+        FixTableInteger.put("m4","0100");
+        FixTableInteger.put("m5","0101");
+        FixTableInteger.put("m6","0110");
+        FixTableInteger.put("m7","0111");
+        FixTableInteger.put("m8","1000");
+        FixTableInteger.put("m9","1001");
+        FixTableInteger.put("m10","1010");
+        FixTableInteger.put("m11","1011");
+        FixTableInteger.put("m12","1100");
+        FixTableInteger.put("m13","1101");
+        FixTableInteger.put("m14","1110");
+        FixTableInteger.put("m15","1111");
 
-    FixTableInteger.put("m0","0000");
-    FixTableInteger.put("m1","0001");
-    FixTableInteger.put("m2","0010");
-    FixTableInteger.put("m3","0011");
-    FixTableInteger.put("m4","0100");
-    FixTableInteger.put("m5","0101");
-    FixTableInteger.put("m6","0110");
-    FixTableInteger.put("m7","0111");
-    FixTableInteger.put("m8","1000");
-    FixTableInteger.put("m9","1001");
-    FixTableInteger.put("m10","1010");
-    FixTableInteger.put("m11","1011");
-    FixTableInteger.put("m12","1100");
-    FixTableInteger.put("m13","1101");
-    FixTableInteger.put("m14","1110");
-    FixTableInteger.put("m15","1111");
-      for(String x : minTermsList) {
+        boolean[] matched = new boolean[minTermsList.size()];
+
+      for(int i = 0;i<minTermsList.size();i++) {
+        String x = minTermsList.get(i);
         String bits = FixTableInteger.get(x);
-        for (String y : minTermsList){
-            if (x.equals(y) || minTermsList.indexOf(y) <= minTermsList.indexOf(x)) {
-                continue;
-            }
+        for (int j = i + 1; j < minTermsList.size(); j++){
+            String y = minTermsList.get(j);
             String bits1 = FixTableInteger.get(y);
             int difference = 0;
             StringBuilder temp = new StringBuilder("");
-            for(int i = 0;i < bits.length();i++){
-                
-                if (bits.charAt(i) == bits1.charAt(i)){
-                    temp.append(bits.charAt(i));
+            for(int k = 0;k < bits.length();k++){
+                if (bits.charAt(k) == bits1.charAt(k)){
+                    temp.append(bits.charAt(k));
                 }else{
                     difference++;
                     temp.append("x");
                 }
             }
             if(difference == 1){
+                matched[i] = true;
+                matched[j] = true;
                 String combineds = temp.toString();
                 CombinedMinTerm.append("\n(").append(x).append(" , ").append(y).append(")").append("->").append(temp.toString()).append("\n");
                 LevelOneList.add(combineds);
@@ -255,6 +258,12 @@ public class Mcclusky{
                 
         }
       }
+            for(int i = 0;i < minTermsList.size();i++){
+                if(!matched[i]){
+                    String x = minTermsList.get(i);
+                    primeImplicant.add(FixTableInteger.get(x));
+                }
+            }
         return CombinedMinTerm.toString()+"\nLevel One Values Are : "+LevelOneList;
     }
     
@@ -262,7 +271,7 @@ public class Mcclusky{
 
     String LevelTwo(){
         StringBuilder CombinedLevelTwo = new StringBuilder("");
-        LevelTwoList.clear();
+        boolean[] matched = new boolean[LevelOneList.size()];
 
         for(int i = 0;i < LevelOneList.size();i++){
             for(int j = i+1;j < LevelOneList.size();j++){
@@ -279,14 +288,113 @@ public class Mcclusky{
                     }
                 }
                 if(difference == 1){
+                    matched[i] = true;
+                    matched[j] = true;
                     String Combined = temp.toString();
                     CombinedLevelTwo.append("(").append(x).append(",").append(y).append(")->").append(Combined).append("\n");
                     LevelTwoList.add(Combined);
                 }
             }
         }
+            for(int i = 0; i < LevelOneList.size();i++){
+                if(!matched[i]){
+                    primeImplicant.add(LevelOneList.get(i));
+                }
+            }
+        Set<String> unique = new LinkedHashSet<>(LevelTwoList);
+        LevelTwoList.clear();
+        LevelTwoList.addAll(unique);
         
         return CombinedLevelTwo.toString() + "\nLevelTwo Values Are:" +LevelTwoList;
+    }
+    String LevelThree(){
+        StringBuilder CombinedLevelThree = new StringBuilder("");
+        boolean[] matched = new boolean[LevelTwoList.size()];
+
+        for(int i = 0;i < LevelTwoList.size();i++){
+            for(int j = i+1;j < LevelTwoList.size();j++){
+                String x = LevelTwoList.get(i);
+                String y = LevelTwoList.get(j);
+                StringBuilder temp = new StringBuilder("");
+                int difference = 0;
+                for(int k = 0; k < x.length();k++){
+                    if(x.charAt(k) == y.charAt(k)){
+                        temp.append(x.charAt(k));
+                    }else{
+                        difference++;
+                        temp.append("x");
+                    }
+                }
+                if(difference == 1){
+                    matched[i] = true;
+                    matched[j] = true;
+                    String Combined = temp.toString();
+                    CombinedLevelThree.append("(").append(x).append(",").append(y).append(")->").append(Combined).append("\n");
+                    LevelThreeList.add(Combined);
+                }
+            }
+        }
+            for(int i = 0;i < LevelTwoList.size();i++){
+                if(!matched[i]){
+                    primeImplicant.add(LevelTwoList.get(i));
+                }
+            }
+        Set<String> unique = new LinkedHashSet<>(LevelThreeList);
+        LevelThreeList.clear();
+        LevelThreeList.addAll(unique);
+
+        primeImplicant.addAll(LevelThreeList);
+
+        return CombinedLevelThree.toString() + "\nLevel Three Values Are :" + LevelThreeList;
+    }
+    String SetLastExpression(String Pattern){
+        char[] vars = {'A' , 'B' , 'C' , 'D'};
+        
+        if(ST.equals("SOP")){
+            StringBuilder sopResult = new StringBuilder();
+            for(int i = 0;i < Pattern.length();i++){
+                char c = Pattern.charAt(i);
+                if(c == '0'){
+                    sopResult.append(vars[i]).append("'");
+                }else if(c == '1'){
+                    sopResult.append(vars[i]);
+                }else{
+                    continue;
+                }  
+        }
+            return sopResult.toString();
+       }else{
+            StringBuilder posResult = new StringBuilder("(");
+            for(int i = 0; i < Pattern.length();i++){
+                char c = Pattern.charAt(i);
+                if(c == '0'){
+                    posResult.append(vars[i]).append(" + ");
+                }else if(c == '1'){
+                    posResult.append(vars[i]).append("' + ");
+                }else{
+                    continue;
+                }
+                if(posResult.length() >= 3){
+                    posResult.setLength(posResult.length() - 3);
+                }
+                
+            }
+            posResult.append(")");
+            return posResult.toString(); 
+        }
+    }
+    String BeforeLastExpression(ArrayList<String> primeLists){
+        if (primeLists.isEmpty())return "No Implicants Found !";
+
+        StringBuilder expression = new StringBuilder();
+        for(String implicant : primeLists){
+            expression.append(SetLastExpression(implicant));
+            expression.append(ST.equals("SOP") ? "+" : "*");
+        }
+        if(expression.length() > 0){
+            expression.setLength(expression.length() - 1);
+        }
+            return expression.toString();
     }
 }
 

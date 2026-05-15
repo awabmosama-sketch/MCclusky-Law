@@ -1,3 +1,4 @@
+import java.util.*;
 public class main {
     public static void main(String[] args) {
         Mcclusky m = new Mcclusky();
@@ -13,5 +14,9 @@ public class main {
         System.out.println("List Of Number's: " + m.numberOfOnes());
         System.out.println("\nThe Different Bits Are\n: " + m.LevelOne());
         System.out.println("\nLevel Two Value Are:\n" + m.LevelTwo());
+        System.out.println("\nLevel Three Value Are:\n" + m.LevelThree());
+        
+        ArrayList<String> FinalList = new ArrayList<>(m.primeImplicant);
+        System.out.println("\nThe Simflified Expression Is :" + m.BeforeLastExpression(FinalList));
     }
 }
