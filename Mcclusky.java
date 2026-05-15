@@ -268,9 +268,6 @@ public class Mcclusky{
             for(int j = i+1;j < LevelOneList.size();j++){
                 String x = LevelOneList.get(i);
                 String y = LevelOneList.get(j);
-               // if(x.equals(y) || LevelOneList.indexOf(y) <= LevelOneList.indexOf(x)){
-                 //   continue;
-                //}
                 StringBuilder temp = new StringBuilder("");
                 int difference = 0;
                 for(int k = 0;k < x.length();k++){
